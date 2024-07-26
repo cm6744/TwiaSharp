@@ -50,7 +50,6 @@ namespace TwiaSharp.Syntax
 		IF, 
 		VOID, 
 		OR, 
-		SOUT, 
 		RET, 
 		//BASIC, 
 		//HERE, 

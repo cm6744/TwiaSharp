@@ -51,7 +51,12 @@ namespace TwiaSharp.Syntax
 				case '-': Push(TokenType.MINUS); break;
 				case '+': Push(TokenType.PLUS); break;
 				case '*': Push(TokenType.STAR); break;
-				case '/': Push(TokenType.SLASH); break;
+				case '/': 
+					if(Match('/')) 
+					{
+						while(Peek() != '\n' && !End) current++; break;
+					}
+					Push(TokenType.SLASH); break;
 				case '!': Push(Match('=') ? TokenType.BANG_EQ : TokenType.BANG); break;
 				case '>': Push(Match('=') ? TokenType.GRT_EQ : TokenType.GRT); break;
 				case '<': Push(Match('=') ? TokenType.LES_EQ : TokenType.LES); break;
@@ -161,7 +166,6 @@ namespace TwiaSharp.Syntax
 			Keywords["function"] = TokenType.FUNC;
 			Keywords["if"] = TokenType.IF;
 			Keywords["void"] = TokenType.VOID;
-			Keywords["outstream"] = TokenType.SOUT;
 			Keywords["return"] = TokenType.RET;
 			//Keywords["basic"] = TokenType.BASIC;
 			//Keywords["here"] = TokenType.HERE;

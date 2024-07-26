@@ -1,8 +1,0 @@
-﻿# Twia 024
-
-export Fib;
-
-function Fib(n) do
-	if(n <= 2) do return 1; end
-	return Fib(n - 1) + Fib(n - 2);
-end

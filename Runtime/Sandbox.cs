@@ -50,6 +50,8 @@ namespace TwiaSharp.Runtime
 				Union u = stmt.Execute();
 				if(u.Return)
 				{
+					u.Return = false;
+					//A function invocation should not pass return out.
 					Depth--;
 					return u;
 				}

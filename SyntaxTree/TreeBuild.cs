@@ -147,7 +147,6 @@ namespace TwiaSharp.SyntaxTree
 			if(Match(TokenType.IF)) return stm_if();
 			if(Match(TokenType.FOR)) return stm_for();
 			if(Match(TokenType.WHILE)) return stm_while();
-			if(Match(TokenType.SOUT)) return stm_ostrm();
 			if(Match(TokenType.DO)) return new StmBlock(get_block());
 			if(Match(TokenType.LET)) return stm_letvar(needSemcol);
 
@@ -255,13 +254,6 @@ namespace TwiaSharp.SyntaxTree
 			if(Match(TokenType.ELSE)) @else = stm();
 
 			return new StmIf(cond, then, @else);
-		}
-
-		static Statement stm_ostrm()
-		{
-			Expression expr = exp();
-			Consume(TokenType.SEMCOL);
-			return new StmOutStream(expr);
 		}
 
 		static List<Statement> get_block()

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".Run\FIB.twi" />
+    <Content Include=".Run\LIB_1.twi" />
     <Content Include=".Run\EXAMPLE.twi" />
   </ItemGroup>
 

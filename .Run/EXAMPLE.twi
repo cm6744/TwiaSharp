@@ -1,13 +1,73 @@
-﻿# Twia 024
+﻿# Twia 2024.1
 
 import system;
 import math;
 import io;
+//OK, import our own lib.
+import fib;
 
-function init() do
-	let file = fopen("FIB.twi");
-	let code = read_strings(file);
-	let ch = compile_string(code);
-	let j = eval_to(ch, "Fib", 27);
-	outstream j;
+//Const cannot use contents in any library. It can only be a literal value, like string or number.
+//Actually math lib has a "pi" const, so we are overriding it.
+const pi = 3.14;
+
+//Here we can pass in an UnionObject, or any other object, if you want.
+function init(obj, date) do
+
+	# CHAPTER 1 - function and var
+
+	//Here we set a variable. You needn't to announce it.
+	//A function body is a scope. Even the for-loop "i" will be seen as a variable in the whole body.
+	//So be aware of it.
+	let fib_result = fib(10);
+	//just like print.
+	write_endpoint(fib_result);
+
+	//Function is a variable in global scope, and it is the only global variable.
+	//Twia do not provide global variable, except constant.
+	let fib_fn = fib;
+	fib_fn(10);
+
+	# CHAPTER 2 - array and object
+
+	//The two means by which we can create an array.
+	//And how to set and get array values.
+	let a = [1, 2, 3, 4];
+	let b = new array[4];
+	let b[0] = 1;
+	write_endpoint(b[0] + a[3]);
+
+	//Object creation. This way we cannot contains any variables.
+	let point = {x = 1, y = 2};
+	//This way we can push a variable into an object.
+	let point.x = a[2];
+	write_endpoint(point.x);
+
+	//Remember the object we initially passed in?
+	write_endpoint(obj.item1);
+	write_endpoint(date);
+
+	//Contains functions. Cool!
+	let point.x = fib;
+	write_endpoint(point.x(27));
+
+	# CHAPTER 3 - if, while and for
+
+	if(true or 1 == 2) do
+		write_endpoint("This is if!");
+	end
+	else do
+		write_endpoint("This is else!");
+	end
+
+	let i = 0;
+	while(i < 10) do
+		let i = i + 1;
+		write_endpoint("While " + i);
+	end
+
+	//Look. Here we reset the "i" variable, so it is usable again.
+	for(let i = 0; i < 10; let i = i + 1) do
+		write_endpoint("For " + i);
+	end
+
 end

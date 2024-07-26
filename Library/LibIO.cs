@@ -20,6 +20,11 @@ namespace TwiaSharp.Library
 
 			Functions["fopen"] = new Function((v) => FileSystem.GetLocal((string) v[0]));
 			Functions["fopen_abs"] = new Function((v) => FileSystem.GetAbsolute((string) v[0]));
+			Functions["write_endpoint"] = new Function((v) =>
+			{
+				Sandbox.Endpoint.Outstream(v[0]);
+				return null;
+			});
 			Functions["read_strings_arrayed"] = new Function((v) => ToUArr(StringIO.ReadArray(v[0])));
 			Functions["read_strings"] = new Function((v) => StringIO.Read(v[0]));
 		}
