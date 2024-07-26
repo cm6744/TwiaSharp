@@ -1,0 +1,13 @@
+﻿# Twia 024
+
+import system;
+import math;
+import io;
+
+function init() do
+	let file = fopen("FIB.twi");
+	let code = read_strings(file);
+	let ch = compile_string(code);
+	let j = eval_to(ch, "Fib", 27);
+	outstream j;
+end
