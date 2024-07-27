@@ -20,6 +20,7 @@ namespace TwiaSharp.SyntaxTree
 		static Dictionary<string, FunctionDynamic> funcBodies;
 		static List<string> usings;
 		static string GlobalScope = "%_GLOBAL_SCOPE_%";
+		static bool export;
 
 		public static CompiledChunk ToTree(List<Token> tokenslist)
 		{
@@ -33,37 +34,11 @@ namespace TwiaSharp.SyntaxTree
 
 			//PRECOMIPILE
 
-			bool export = false;
+			export = false;
 
 			while(!End)
 			{
-				if(Match(TokenType.IMPORT))
-				{
-					Token name = Consume(TokenType.IDENT);
-					usings.Add(name.Lexeme);
-				}
-				else if(Match(TokenType.EXPORT))
-				{
-					Token name = Consume(TokenType.IDENT);
-					localLib.LibName = name.Lexeme;
-					export = true;
-				}
-				else if(Match(TokenType.CONST))
-				{
-					Token name = Consume(TokenType.IDENT);
-					Consume(TokenType.EQ);
-					Expression val = exp();
-					localLib.Consts[name.Lexeme] = Union.ToObject(val.Cast());
-				}
-				else if(Match(TokenType.FUNCTION))
-				{
-					//Add a function prototype
-					Token name = Consume(TokenType.IDENT);
-					FunctionDynamic dyn = new FunctionDynamic();
-					funcBodies[name.Lexeme] = dyn;
-					localLib.Functions[name.Lexeme] = dyn;
-				}
-				else Advance();
+				pre_compile();
 			}
 
 			current = 0;
@@ -112,6 +87,37 @@ namespace TwiaSharp.SyntaxTree
 
 		//STATEMENTS
 
+		static void pre_compile()
+		{
+			if(Match(TokenType.IMPORT))
+			{
+				Token name = Consume(TokenType.IDENT);
+				usings.Add(name.Lexeme);
+			}
+			else if(Match(TokenType.EXPORT))
+			{
+				Token name = Consume(TokenType.IDENT);
+				localLib.LibName = name.Lexeme;
+				export = true;
+			}
+			else if(Match(TokenType.CONST))
+			{
+				Token name = Consume(TokenType.IDENT);
+				Consume(TokenType.EQ);
+				Expression val = exp();
+				localLib.Consts[name.Lexeme] = Union.ToObject(val.Cast());
+			}
+			else if(Match(TokenType.FUNCTION))
+			{
+				//Add a function prototype
+				Token name = Consume(TokenType.IDENT);
+				FunctionDynamic dyn = new FunctionDynamic();
+				funcBodies[name.Lexeme] = dyn;
+				localLib.Functions[name.Lexeme] = dyn;
+			}
+			else Advance();
+		}
+
 		static void function_def()
 		{
 			Token name = Consume(TokenType.IDENT);
@@ -150,8 +156,16 @@ namespace TwiaSharp.SyntaxTree
 			if(Match(TokenType.WHILE)) return stm_while();
 			if(Match(TokenType.DO)) return new StmBlock(get_block());
 			if(Match(TokenType.LET)) return stm_letvar(needSemcol);
-			
+
 			return stm_fromexp(needSemcol);
+		}
+
+		static Statement stm_fromexp(bool needSemcol = true)
+		{
+			Expression expr = exp();
+			if(needSemcol)
+				Consume(TokenType.SEMCOL);
+			return new StmExpression(expr);
 		}
 
 		static Statement stm_letvar(bool needSemcol = true)
@@ -285,19 +299,12 @@ namespace TwiaSharp.SyntaxTree
 
 			while(!Check(TokenType.END) && !End)
 			{
-				lst.Add(stm());
+				Statement stmt = stm();
+				lst.Add(stmt);
 			}
 
 			Consume(TokenType.END);
 			return lst;
-		}
-
-		static Statement stm_fromexp(bool needSemcol = true)
-		{
-			Expression expr = exp();
-			if(needSemcol)
-				Consume(TokenType.SEMCOL);
-			return new StmExpression(expr);
 		}
 
 		//EXPRESSION
@@ -379,13 +386,27 @@ namespace TwiaSharp.SyntaxTree
 
 		static Expression exp_opt2()
 		{
-			Expression exp = exp_unary();
+			Expression exp = exp_perc_and_pow();
 
 			while(Match(TokenType.SLASH, TokenType.STAR))
 			{
 				Token opt = Previous;
 				Expression r = exp_opt2();
 				exp = new ExpBinary(exp, r, opt);
+			}
+
+			return exp;
+		}
+
+		static Expression exp_perc_and_pow()
+		{
+			Expression exp = exp_unary();
+
+			if(Match(TokenType.PERCENT, TokenType.UPROW))
+			{
+				Token opt = Previous;
+				Expression r = exp_unary();
+				return new ExpBinary(exp, r, opt);
 			}
 
 			return exp;
@@ -409,7 +430,23 @@ namespace TwiaSharp.SyntaxTree
 
 			while(true)
 			{
-				if(Match(TokenType.L_PAREN)) expr = _fin_call(expr);
+				if(Match(TokenType.L_PAREN))
+				{
+					List<Expression> args = new();
+
+					if(!Check(TokenType.R_PAREN))
+					{
+						do
+						{
+							args.Add(exp());
+						}
+						while(Match(TokenType.COMMA));
+					}
+
+					Consume(TokenType.R_PAREN);
+
+					expr = new ExpCall(expr, args.ToArray());
+				}
 				else break;
 			}
 
@@ -426,6 +463,12 @@ namespace TwiaSharp.SyntaxTree
 			if(Match(TokenType.IDENT))
 			{
 				Token ident = Previous;
+				
+				if(Match(TokenType.COLON))
+				{
+					ident = Consume(TokenType.IDENT);//this way has no effect, just a marker.
+				}
+
 				int i = vars.Make(ident.Lexeme, false);
 
 				if(i == -1)
@@ -553,24 +596,6 @@ namespace TwiaSharp.SyntaxTree
 			return null;
 		}
 
-		static Expression _fin_call(Expression callee)
-		{
-			List<Expression> args = new();
-
-			if(!Check(TokenType.R_PAREN))
-			{
-				do
-				{
-					args.Add(exp());
-				}
-				while(Match(TokenType.COMMA));
-			}
-
-			Consume(TokenType.R_PAREN);
-
-			return new ExpCall(callee, args.ToArray());
-		}
-
 		//UTILS
 
 		static bool End => Peek.Type == TokenType.EOF;
@@ -600,8 +625,8 @@ namespace TwiaSharp.SyntaxTree
 		{
 			if(Check(type)) return Advance();
 			Errors.SyntaxError(tokens[current].Line, $"'{Peek.Lexeme}'");
-			//current = tokens.Count - 1;//Wind it up.
-			throw new System.Exception();
+			current = tokens.Count - 1;//Wind it up.
+			return Peek;
 		}
 
 	}

@@ -1,7 +1,7 @@
-﻿# Twia 2024.1
+﻿--Twia 2024.1
 
-# Export the script, means it will be compiled and stored in global scope.
-# We can import this file in any other script compiled after this.
+--Export the script, means it will be compiled and stored in global scope.
+--We can import this file in any other script compiled after this.
 export fib;
 
 function fib(n) do

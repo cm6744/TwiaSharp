@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using TwiaSharp.Runtime;
 using TwiaSharp.Syntax;
 
@@ -35,6 +36,8 @@ namespace TwiaSharp.SyntaxTree
 					case TokenType.PLUS: return Union.Of(left.Num + right.Num);
 					case TokenType.STAR: return Union.Of(left.Num * right.Num);
 					case TokenType.SLASH: return Union.Of(left.Num / right.Num);
+					case TokenType.PERCENT: return Union.Of(left.Num % right.Num);
+					case TokenType.UPROW: return Union.Of(Math.Pow(left.Num, right.Num));
 					case TokenType.GREAT: return Union.Of(left.Num > right.Num);
 					case TokenType.GREAT_EQ: return Union.Of(left.Num >= right.Num);
 					case TokenType.LESS: return Union.Of(left.Num < right.Num);
@@ -63,12 +66,15 @@ namespace TwiaSharp.SyntaxTree
 				return Union.Null;
 			}
 
+			//Greatly thanks to dynamic type.
 			return Operator.Type switch
 			{
 				TokenType.MINUS => Union.Of(left.Obj - right.Obj),
 				TokenType.PLUS => Union.Of(left.Obj + right.Obj),
 				TokenType.STAR => Union.Of(left.Obj * right.Obj),
 				TokenType.SLASH => Union.Of(left.Obj / right.Obj),
+				TokenType.PERCENT => Union.Of(left.Obj % right.Obj),
+				TokenType.UPROW => Union.Of(left.Obj ^ right.Obj),
 				TokenType.GREAT => Union.Of(left.Obj > right.Obj),
 				TokenType.GREAT_EQ => Union.Of(left.Obj >= right.Obj),
 				TokenType.LESS => Union.Of(left.Obj < right.Obj),

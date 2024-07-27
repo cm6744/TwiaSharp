@@ -34,7 +34,8 @@ namespace TwiaSharp.Syntax
 			return list;
 		}
 
-		static void Scan()
+		// "//", "--", "#" is all supported as comments.
+ 		static void Scan()
 		{
 			char ch = src[current++];
 			switch(ch)
@@ -48,7 +49,12 @@ namespace TwiaSharp.Syntax
 				case ':': Push(TokenType.COLON); break;
 				case ',': Push(TokenType.COMMA); break;
 				case '.': Push(TokenType.DOT); break;
-				case '-': Push(TokenType.MINUS); break;
+				case '-':
+					if(Match('-'))
+					{
+						while(Peek() != '\n' && !End) current++; break;
+					}
+					Push(TokenType.MINUS); break;
 				case '+': Push(TokenType.PLUS); break;
 				case '*': Push(TokenType.STAR); break;
 				case '/': 
@@ -63,6 +69,8 @@ namespace TwiaSharp.Syntax
 				case '=': Push(Match('=') ? TokenType.EQ_EQ : TokenType.EQ); break;
 				case '#': while(Peek() != '\n' && !End) current++; break;
 				case ';': Push(TokenType.SEMCOL); break;
+				case '%': Push(TokenType.PERCENT); break;
+				case '^': Push(TokenType.UPROW); break;
 				case ' ':
 				case '\t':
 				case '\r':
@@ -159,7 +167,6 @@ namespace TwiaSharp.Syntax
 		{
 			Keywords["or"] = TokenType.OR;
 			Keywords["and"] = TokenType.AND;
-			//Keywords["class"] = TokenType.CLASS;
 			Keywords["else"] = TokenType.ELSE;
 			Keywords["false"] = TokenType.FALSE;
 			Keywords["for"] = TokenType.FOR;
@@ -167,15 +174,12 @@ namespace TwiaSharp.Syntax
 			Keywords["if"] = TokenType.IF;
 			Keywords["void"] = TokenType.VOID;
 			Keywords["return"] = TokenType.RETURN;
-			//Keywords["basic"] = TokenType.BASIC;
-			//Keywords["here"] = TokenType.HERE;
 			Keywords["true"] = TokenType.TRUE;
 			Keywords["let"] = TokenType.LET;
 			Keywords["while"] = TokenType.WHILE;
 			Keywords["begin"] = TokenType.BEGIN;
 			Keywords["end"] = TokenType.END;
 			Keywords["do"] = TokenType.DO;
-			//Keywords["var"] = TokenType.VAR;
 			Keywords["array"] = TokenType.ARRAY;
 			Keywords["new"] = TokenType.NEW;
 			Keywords["import"] = TokenType.IMPORT;

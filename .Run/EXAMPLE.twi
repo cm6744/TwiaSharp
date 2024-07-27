@@ -1,33 +1,33 @@
-﻿# Twia 2024.1
+﻿--Twia 2024.1
 
-import system;
+import os;
 import math;
 import io;
-//OK, import our own lib.
+--OK, import our own lib.
 import fib;
 
-//Const cannot use contents in any library. It can only be a literal value, like string or number.
-//Actually math lib has a "pi" const, so we are overriding it.
+--Const cannot use contents in any library. It can only be a literal value, like string or number.
+--Actually math lib has a "pi" const, so we are overriding it.
 const pi = 3.14;
 
-//Here we can pass in an UnionObject, or any other object, if you want.
+--Here we can pass in an UnionObject, or any other object, if you want.
 function init(obj, date) do
 
-	# CHAPTER 1 - function and var
+	--CHAPTER 1 - function and var
 
-	//Here we set a variable. You needn't to announce it.
-	//A function body is a scope. Even the for-loop "i" will be seen as a variable in the whole body.
-	//So be aware of it.
+	--Here we set a variable. You needn't to announce it.
+	--A function body is a scope. Even the for-loop "i" will be seen as a variable in the whole body.
+	--So be aware of it.
 	let fib_result = fib(10);
-	//just like print.
+	--just like print.
 	write_endpoint(fib_result);
 
-	//Function is a variable in global scope, and it is the only global variable.
-	//Twia do not provide global variable, except constant.
+	--Function is a variable in global scope, and it is the only global variable.
+	--Twia do not provide global variable, except constant.
 	let fib_fn = fib;
 	fib_fn(10);
 
-	//Closures.
+	--Closures.
 	let my_print = with(x) do write_endpoint(x); end;
 	my_print("This is from closure!");
 	let my_sum = with(x, y) do
@@ -36,30 +36,30 @@ function init(obj, date) do
 	end;
 	my_print("Closure result! :" + my_sum(3, 4));
 
-	# CHAPTER 2 - array and object
+	--CHAPTER 2 - array and object
 
-	//The two means by which we can create an array.
-	//And how to set and get array values.
+	--The two means by which we can create an array.
+	--And how to set and get array values.
 	let a = [1, 2, 3, 4];
 	let b = new array[4];
 	let b[0] = 1;
 	write_endpoint(b[0] + a[3]);
 
-	//Object creation. This way we cannot contains any variables.
+	--Object creation. This way we cannot contains any variables.
 	let point = {x = 1, y = 2};
-	//This way we can push a variable into an object.
+	--This way we can push a variable into an object.
 	let point.x = a[2];
 	write_endpoint(point.x);
 
-	//Remember the object we initially passed in?
+	--Remember the object we initially passed in?
 	write_endpoint(obj.item1);
 	write_endpoint(date);
 
-	//Contains functions. Cool!
+	--Contains functions. Cool!
 	let point.x = fib;
 	write_endpoint(point.x(27));
 
-	# CHAPTER 3 - if, while and for
+	--CHAPTER 3 - if, while and for
 
 	if(true or 1 == 2) do
 		write_endpoint("This is if!");
@@ -84,7 +84,7 @@ function init(obj, date) do
 		let i = i + 1;
 	end
 
-	//Look. Here we reset the "i" variable, so it is usable again.
+	--Look. Here we reset the "i" variable, so it is usable again.
 	for(let i = 0; i < 10; let i = i + 1) do
 		write_endpoint("For " + i);
 	end

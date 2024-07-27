@@ -25,6 +25,10 @@ namespace TwiaSharp.SyntaxTree
         public Union Cast()
         {
             FunctionLike fn = Callee.Cast().Obj;
+            if(fn == null)
+            {
+                Errors.RuntimeError(-1, $"Unknown function.");
+			}
             return fn.Invoke(Arguments);
         }
 

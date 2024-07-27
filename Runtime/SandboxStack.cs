@@ -16,7 +16,7 @@ namespace TwiaSharp.Runtime
 		{
 			get 
 			{ 
-				return Values[d, k] ?? Union.Null;
+				return Values[d, k];
 			}
 			set 
 			{

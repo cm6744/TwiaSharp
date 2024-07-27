@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK.Audio.OpenAL;
 using TwiaSharp.Runtime;
+using TwiaSharp.Syntax;
 
 namespace TwiaSharp.SyntaxTree
 {
@@ -11,16 +14,16 @@ namespace TwiaSharp.SyntaxTree
 	public sealed class StmExpression : Statement
 	{
 
-		public readonly Expression Expr;
+		public readonly Expression Value;
 
-		public StmExpression(Expression expr)
+		public StmExpression(Expression value)
 		{
-			Expr = expr;
+			Value = value;
 		}
 
 		public Union Execute()
 		{
-			return Expr.Cast();
+			return Value.Cast();
 		}
 
 	}

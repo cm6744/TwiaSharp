@@ -1,0 +1,17 @@
+﻿--Twia 2024.1
+
+import os;
+import math;
+import io;
+import fib;
+
+function init() do
+	
+end
+
+function speedtest(fn) do
+	let t0 = timestamp();
+	fn();
+	let t1 = timestamp();
+	write_endpoint(timestamp_to_milli(t1 - t0));
+end

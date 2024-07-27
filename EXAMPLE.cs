@@ -29,6 +29,10 @@ namespace TwiaSharp
 			exp.Eval(obj, DateTime.Now);
 			//We can pass something into the script or invoke other functions.
 			//CompiledChunk provides a serie of methods to fulfill you.
+
+			//This script print the time used to for loop 1,000,000 times. Not slow.
+			exp = CompiledChunk.From(FileSystem.GetLocal("TimeShow.twi"));
+			exp.Eval();
 		}
 
 	}

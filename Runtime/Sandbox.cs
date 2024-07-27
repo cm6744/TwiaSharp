@@ -20,11 +20,12 @@ namespace TwiaSharp.Runtime
 			LibOverall.Link(new LibSystem());
 			LibOverall.Link(new LibMath());
 			LibOverall.Link(new LibIO());
+			LibOverall.Link(new LibVisual());
 		}
 
 		public static SandboxStack Stack = new();
 		public static Union[] Functions;
-		
+
 		public const int FrameDepth = 64;
 		public const int FrameSize = 64;
 		public static int Depth = -1;

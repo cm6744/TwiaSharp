@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using TwiaSharp.SyntaxTree;
 using Twita.Common;
 
@@ -18,70 +19,49 @@ namespace TwiaSharp.Runtime
 
 	}
 
-	public unsafe sealed class Union
+	public unsafe class Union
 	{
 
 		//UNION ITSELF
 
 		public byte FirstType;
 		public bool Return;
-		
-		public double Val0;
-		public dynamic Obj0;
+		public float _Umg;
+		public object _Obj;
 
-		public double Num => Val0;
-		public bool Bol => Val0 == 1;
+		public float Num => _Umg;
+		public bool Bol => _Umg == 1;
 		//Here's a recursion that goes into the deepest literal value.
 		public dynamic Obj => ToObject(this);
 
-		static Union GetUnion(TypeDef type)
+		Union(float ptr, TypeDef def)
 		{
-			return new Union() { FirstType = (byte) type };
+			_Umg = ptr;
+			FirstType = (byte) def;
+			Return = false;
 		}
 
-		public static Union Of(double v)
+		public static Union Of(float v)
 		{
-			Union u = GetUnion(TypeDef.NUM);
-			u.Val0 = v;
-			return u;
+			return new Union(v, TypeDef.NUM);
 		}
 
 		public static Union Of(bool v)
 		{
-			Union u = GetUnion(TypeDef.BOOL);
-			u.Val0 = v ? 1 : 0;
-			return u;
-		}
-
-		public static Union Of(double v, TypeDef type)
-		{
-			Union u = GetUnion(type);
-			u.Val0 = v;
-			return u;
-		}
-
-		public static Union Of(bool v, TypeDef type)
-		{
-			Union u = GetUnion(type);
-			u.Val0 = v ? 1 : 0;
-			return u;
+			return new Union(v ? 1 : 0, TypeDef.BOOL);
 		}
 
 		public static Union Of(object v)
 		{
-			Union u = GetUnion(TypeDef.OBJECT);
-			u.Obj0 = v;
-			return u;
+			return new Union(0, TypeDef.OBJECT) { _Obj = v };
 		}
 
 		public static Union Of(object v, TypeDef type)
 		{
-			Union u = GetUnion(type);
-			u.Obj0 = v;
-			return u;
+			return new Union(0, type) { _Obj = v };
 		}
 
-		public static readonly Union Null = Of(null, TypeDef.VOID);
+		public static readonly Union Null = new(0, TypeDef.VOID);
 
 		public static Union FromObject(object o)
 		{
@@ -89,10 +69,10 @@ namespace TwiaSharp.Runtime
 
 			return o switch
 			{
-				int d3 => Of(d3, TypeDef.NUM),
-				float d4 => Of(d4, TypeDef.NUM),
-				double d5 => Of(d5, TypeDef.NUM),
-				bool b => Of(b, TypeDef.BOOL),
+				int d3 => Of((float) d3),
+				float d4 => Of((float) d4),
+				double d5 => Of((float) d5),
+				bool b => Of((bool) b),
 				Supplier<object> os => Of(os, TypeDef.EXPR),
 				_ => Of(o)
 			};
@@ -106,8 +86,8 @@ namespace TwiaSharp.Runtime
 			{
 				(byte) TypeDef.NUM => u.Num,
 				(byte) TypeDef.BOOL => u.Bol,
-				(byte) TypeDef.OBJECT => u.Obj0,
-				(byte) TypeDef.EXPR => ((Supplier<object>) u.Obj0).Invoke(),
+				(byte) TypeDef.OBJECT => u._Obj,
+				(byte) TypeDef.EXPR => ((Supplier<object>) u._Obj).Invoke(),
 				(byte) TypeDef.VOID => null,
 
 				_ => u.Obj,
@@ -116,8 +96,15 @@ namespace TwiaSharp.Runtime
 
 		public static Union Certained(Union u)
 		{
-			if(u.FirstType == 17) return Union.FromObject(u.Obj);
+			if(u.FirstType == 17) 
+				return Union.FromObject(u.Obj);
 			return u;
+		}
+
+		public static string EnsureS(object o)
+		{
+			if(o == null) return "Null";
+			return o is string s ? s : o.ToString();
 		}
 
 	}

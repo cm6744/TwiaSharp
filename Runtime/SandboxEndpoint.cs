@@ -17,7 +17,7 @@ namespace TwiaSharp.Runtime
 
 			public void Outstream(object o)
 			{
-				Console.WriteLine(o == null ? "Null" : o.ToString());
+				Console.WriteLine(Union.EnsureS(o));
 			}
 
 		}

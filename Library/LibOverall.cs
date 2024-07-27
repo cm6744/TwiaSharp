@@ -12,6 +12,16 @@ namespace TwiaSharp.Library
 
 		public Dictionary<string, Lib> Vars = new();
 
+		public void Hook(string lib, string name, Function fn)
+		{
+			Vars[lib].Functions[name] = fn;
+		}
+
+		public void Hook(string lib, string name, object cst)
+		{
+			Vars[lib].Consts[name] = cst;
+		}
+
 		public void Link(Lib lib)
 		{
 			lib.Load();
