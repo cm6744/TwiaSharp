@@ -149,7 +149,7 @@ namespace TwiaSharp.SyntaxTree
 			if(Match(TokenType.WHILE)) return stm_while();
 			if(Match(TokenType.DO)) return new StmBlock(get_block());
 			if(Match(TokenType.LET)) return stm_letvar(needSemcol);
-
+			
 			return stm_fromexp(needSemcol);
 		}
 
@@ -187,7 +187,10 @@ namespace TwiaSharp.SyntaxTree
 			Token keyword = Previous;
 			Expression value = null;
 
-			if(!Check(TokenType.SEMCOL)) value = exp();
+			if(!Check(TokenType.SEMCOL)) 
+				value = exp();
+			else
+				value = new ExpLiteral(null);
 
 			Consume(TokenType.SEMCOL);
 
@@ -245,15 +248,34 @@ namespace TwiaSharp.SyntaxTree
 
 		static Statement stm_if()
 		{
+			List<(Expression, Statement)> eifs = new();
+
 			Consume(TokenType.L_PAREN);
 			Expression cond = exp();
 			Consume(TokenType.R_PAREN);
 
 			Statement then = stm();
-			Statement @else = null;
-			if(Match(TokenType.ELSE)) @else = stm();
 
-			return new StmIf(cond, then, @else);
+			eifs.Add((cond, then));//Main branch
+
+			Statement @else = null;
+
+			while(Match(TokenType.ELSE))
+			{
+				if(Match(TokenType.IF))
+				{
+					Consume(TokenType.L_PAREN);
+					cond = exp();
+					Consume(TokenType.R_PAREN);
+					eifs.Add((cond, stm()));
+				}
+				else
+				{
+					@else = stm();
+				}
+			}
+
+			return new StmIf(eifs, @else);
 		}
 
 		static List<Statement> get_block()

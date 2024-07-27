@@ -13,25 +13,23 @@ namespace TwiaSharp.SyntaxTree
 	public sealed class StmIf : Statement
 	{
 
-		public readonly Expression Condition;
-		public readonly Statement ThenBranch;
+		public readonly List<(Expression, Statement)> Branches;
 		public readonly Statement ElseBranch;
 
-		public StmIf(Expression condition, Statement thenBranch, Statement elseBranch)
+		public StmIf(List<(Expression, Statement)> branches, Statement elseBranch)
 		{
-			Condition = condition;
-			ThenBranch = thenBranch;
+			Branches = branches;
 			ElseBranch = elseBranch;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Union Execute()
 		{
-			if(Condition.Cast().Bol)
+			foreach(var e_s in Branches)
 			{
-				return ThenBranch.Execute();
+				if(e_s.Item1.Cast().Bol) return e_s.Item2.Execute();
 			}
-			else if(ElseBranch != null)
+			if(ElseBranch != null)
 			{
 				return ElseBranch.Execute();
 			}

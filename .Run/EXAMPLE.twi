@@ -59,10 +59,20 @@ function init(obj, date) do
 		write_endpoint("This is else!");
 	end
 
+	if(true and 1 == 2) do
+		write_endpoint("This is if!");
+	end
+	else if(true) do
+		write_endpoint("This is else if!");
+	end
+	else do
+		write_endpoint("This is else!");
+	end
+
 	let i = 0;
 	while(i < 10) do
-		let i = i + 1;
 		write_endpoint("While " + i);
+		let i = i + 1;
 	end
 
 	//Look. Here we reset the "i" variable, so it is usable again.
