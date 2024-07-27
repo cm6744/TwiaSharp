@@ -27,6 +27,15 @@ function init(obj, date) do
 	let fib_fn = fib;
 	fib_fn(10);
 
+	//Closures.
+	let my_print = with(x) do write_endpoint(x); end;
+	my_print("This is from closure!");
+	let my_sum = with(x, y) do
+		let v = x + y;
+		return v;
+	end;
+	my_print("Closure result! :" + my_sum(3, 4));
+
 	# CHAPTER 2 - array and object
 
 	//The two means by which we can create an array.

@@ -15,6 +15,7 @@ namespace TwiaSharp.SyntaxTree
 		public readonly Dictionary<string, int> VarIncreaser = new();
 		public static readonly Dictionary<string, int> GVarlist = new();
 		public static int GVarIncreaser;
+		public static int ClosureId;
 
 		public string func => TreeBuild.CURRENT_FUNCTION_SCOPE;
 
@@ -51,6 +52,11 @@ namespace TwiaSharp.SyntaxTree
 			int l = GVarlist[code] = GVarIncreaser;
 			GVarIncreaser++;
 			return l;
+		}
+
+		public static string NextClosure()
+		{
+			return $"%_CLOSURE_SCOPE_{ClosureId++}_%";
 		}
 
 	}

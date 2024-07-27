@@ -19,12 +19,13 @@ namespace TwiaSharp.SyntaxTree
 		static Lib localLib;
 		static Dictionary<string, FunctionDynamic> funcBodies;
 		static List<string> usings;
+		static string GlobalScope = "%_GLOBAL_SCOPE_%";
 
 		public static CompiledChunk ToTree(List<Token> tokenslist)
 		{
 			tokens = tokenslist;
 			current = 0;
-			CURRENT_FUNCTION_SCOPE = "%_GLOBAL_SCOPE_%";
+			CURRENT_FUNCTION_SCOPE = GlobalScope;
 			vars = new();
 			localLib = new();
 			funcBodies = new();
@@ -36,12 +37,12 @@ namespace TwiaSharp.SyntaxTree
 
 			while(!End)
 			{
-				if(Match(TokenType.IMPT))
+				if(Match(TokenType.IMPORT))
 				{
 					Token name = Consume(TokenType.IDENT);
 					usings.Add(name.Lexeme);
 				}
-				else if(Match(TokenType.EXPT))
+				else if(Match(TokenType.EXPORT))
 				{
 					Token name = Consume(TokenType.IDENT);
 					localLib.LibName = name.Lexeme;
@@ -54,7 +55,7 @@ namespace TwiaSharp.SyntaxTree
 					Expression val = exp();
 					localLib.Consts[name.Lexeme] = Union.ToObject(val.Cast());
 				}
-				else if(Match(TokenType.FUNC))
+				else if(Match(TokenType.FUNCTION))
 				{
 					//Add a function prototype
 					Token name = Consume(TokenType.IDENT);
@@ -77,7 +78,7 @@ namespace TwiaSharp.SyntaxTree
 
 			while(!End)
 			{
-				if(Match(TokenType.FUNC))
+				if(Match(TokenType.FUNCTION))
 				{
 					function_def();
 				}
@@ -136,14 +137,14 @@ namespace TwiaSharp.SyntaxTree
 
 			List<Statement> body = get_block();
 
-			CURRENT_FUNCTION_SCOPE = "%_GLOBAL_SCOPE_%";
+			CURRENT_FUNCTION_SCOPE = GlobalScope;
 
 			funcBodies[name.Lexeme].Stmts = body;
 		}
 
 		static Statement stm(bool needSemcol = true)
 		{
-			if(Match(TokenType.RET)) return stm_ret();
+			if(Match(TokenType.RETURN)) return stm_ret();
 			if(Match(TokenType.IF)) return stm_if();
 			if(Match(TokenType.FOR)) return stm_for();
 			if(Match(TokenType.WHILE)) return stm_while();
@@ -352,7 +353,7 @@ namespace TwiaSharp.SyntaxTree
 		{
 			Expression exp = exp_opt1();
 
-			while(Match(TokenType.GRT, TokenType.GRT_EQ, TokenType.LES, TokenType.LES_EQ))
+			while(Match(TokenType.GREAT, TokenType.GREAT_EQ, TokenType.LESS, TokenType.LESS_EQ))
 			{
 				Token opt = Previous;
 				Expression r = exp_opt1();
@@ -515,6 +516,40 @@ namespace TwiaSharp.SyntaxTree
 				return expr;
 			}
 
+			//Closure
+			if(Match(TokenType.WITH))
+			{
+				Consume(TokenType.L_PAREN);
+				List<Token> parameters = new();
+
+				var scope0 = CURRENT_FUNCTION_SCOPE;
+				CURRENT_FUNCTION_SCOPE = TreeVariables.NextClosure();
+
+				if(!Check(TokenType.R_PAREN))
+				{
+					do
+					{
+						Token tk = Consume(TokenType.IDENT);
+						parameters.Add(tk);
+						vars.Make(tk.Lexeme);
+					}
+					while(Match(TokenType.COMMA));
+				}
+
+				Consume(TokenType.R_PAREN);
+
+				Consume(TokenType.DO);
+
+				List<Statement> body = get_block();
+
+				CURRENT_FUNCTION_SCOPE = scope0;
+
+				FunctionDynamic fn = new FunctionDynamic();
+				fn.Stmts = body;
+
+				return new ExpLiteral(fn);
+			}
+
 			return null;
 		}
 
@@ -565,7 +600,7 @@ namespace TwiaSharp.SyntaxTree
 		{
 			if(Check(type)) return Advance();
 			Errors.SyntaxError(tokens[current].Line, $"'{Peek.Lexeme}'");
-			current = tokens.Count - 1;//Wind it up.
+			//current = tokens.Count - 1;//Wind it up.
 			throw new System.Exception();
 		}
 

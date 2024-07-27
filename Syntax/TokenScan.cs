@@ -58,8 +58,8 @@ namespace TwiaSharp.Syntax
 					}
 					Push(TokenType.SLASH); break;
 				case '!': Push(Match('=') ? TokenType.BANG_EQ : TokenType.BANG); break;
-				case '>': Push(Match('=') ? TokenType.GRT_EQ : TokenType.GRT); break;
-				case '<': Push(Match('=') ? TokenType.LES_EQ : TokenType.LES); break;
+				case '>': Push(Match('=') ? TokenType.GREAT_EQ : TokenType.GREAT); break;
+				case '<': Push(Match('=') ? TokenType.LESS_EQ : TokenType.LESS); break;
 				case '=': Push(Match('=') ? TokenType.EQ_EQ : TokenType.EQ); break;
 				case '#': while(Peek() != '\n' && !End) current++; break;
 				case ';': Push(TokenType.SEMCOL); break;
@@ -163,10 +163,10 @@ namespace TwiaSharp.Syntax
 			Keywords["else"] = TokenType.ELSE;
 			Keywords["false"] = TokenType.FALSE;
 			Keywords["for"] = TokenType.FOR;
-			Keywords["function"] = TokenType.FUNC;
+			Keywords["function"] = TokenType.FUNCTION;
 			Keywords["if"] = TokenType.IF;
 			Keywords["void"] = TokenType.VOID;
-			Keywords["return"] = TokenType.RET;
+			Keywords["return"] = TokenType.RETURN;
 			//Keywords["basic"] = TokenType.BASIC;
 			//Keywords["here"] = TokenType.HERE;
 			Keywords["true"] = TokenType.TRUE;
@@ -178,9 +178,10 @@ namespace TwiaSharp.Syntax
 			//Keywords["var"] = TokenType.VAR;
 			Keywords["array"] = TokenType.ARRAY;
 			Keywords["new"] = TokenType.NEW;
-			Keywords["import"] = TokenType.IMPT;
-			Keywords["export"] = TokenType.EXPT;
+			Keywords["import"] = TokenType.IMPORT;
+			Keywords["export"] = TokenType.EXPORT;
 			Keywords["const"] = TokenType.CONST;
+			Keywords["with"] = TokenType.WITH;
 		}
 
 	}

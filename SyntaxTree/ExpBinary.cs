@@ -35,10 +35,10 @@ namespace TwiaSharp.SyntaxTree
 					case TokenType.PLUS: return Union.Of(left.Num + right.Num);
 					case TokenType.STAR: return Union.Of(left.Num * right.Num);
 					case TokenType.SLASH: return Union.Of(left.Num / right.Num);
-					case TokenType.GRT: return Union.Of(left.Num > right.Num);
-					case TokenType.GRT_EQ: return Union.Of(left.Num >= right.Num);
-					case TokenType.LES: return Union.Of(left.Num < right.Num);
-					case TokenType.LES_EQ: return Union.Of(left.Num <= right.Num);
+					case TokenType.GREAT: return Union.Of(left.Num > right.Num);
+					case TokenType.GREAT_EQ: return Union.Of(left.Num >= right.Num);
+					case TokenType.LESS: return Union.Of(left.Num < right.Num);
+					case TokenType.LESS_EQ: return Union.Of(left.Num <= right.Num);
 					case TokenType.EQ_EQ: return Union.Of(left.Num == right.Num);
 					case TokenType.BANG_EQ: return Union.Of(left.Num != right.Num);
 				}
@@ -69,10 +69,10 @@ namespace TwiaSharp.SyntaxTree
 				TokenType.PLUS => Union.Of(left.Obj + right.Obj),
 				TokenType.STAR => Union.Of(left.Obj * right.Obj),
 				TokenType.SLASH => Union.Of(left.Obj / right.Obj),
-				TokenType.GRT => Union.Of(left.Obj > right.Obj),
-				TokenType.GRT_EQ => Union.Of(left.Obj >= right.Obj),
-				TokenType.LES => Union.Of(left.Obj < right.Obj),
-				TokenType.LES_EQ => Union.Of(left.Obj <= right.Obj),
+				TokenType.GREAT => Union.Of(left.Obj > right.Obj),
+				TokenType.GREAT_EQ => Union.Of(left.Obj >= right.Obj),
+				TokenType.LESS => Union.Of(left.Obj < right.Obj),
+				TokenType.LESS_EQ => Union.Of(left.Obj <= right.Obj),
 				TokenType.EQ_EQ => Union.Of(left.Obj == right.Obj),
 				TokenType.BANG_EQ => Union.Of(left.Obj != right.Obj),
 				_ => Union.Null,
