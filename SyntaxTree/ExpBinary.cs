@@ -20,68 +20,28 @@ namespace TwiaSharp.SyntaxTree
 			Operator = op;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Union Cast()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Cast(Sandbox sb)
 		{
-			Union right = Right.Cast();
-			Union left = Left.Cast();
-			byte t1 = right.FirstType;
-			byte t2 = left.FirstType;
-
-			if(t1 == 1 && t2 == 1)
-			{
-				switch(Operator.Type)
-				{
-					case TokenType.MINUS: return Union.Of(left.Num - right.Num);
-					case TokenType.PLUS: return Union.Of(left.Num + right.Num);
-					case TokenType.STAR: return Union.Of(left.Num * right.Num);
-					case TokenType.SLASH: return Union.Of(left.Num / right.Num);
-					case TokenType.PERCENT: return Union.Of(left.Num % right.Num);
-					case TokenType.UPROW: return Union.Of(Math.Pow(left.Num, right.Num));
-					case TokenType.GREAT: return Union.Of(left.Num > right.Num);
-					case TokenType.GREAT_EQ: return Union.Of(left.Num >= right.Num);
-					case TokenType.LESS: return Union.Of(left.Num < right.Num);
-					case TokenType.LESS_EQ: return Union.Of(left.Num <= right.Num);
-					case TokenType.EQ_EQ: return Union.Of(left.Num == right.Num);
-					case TokenType.BANG_EQ: return Union.Of(left.Num != right.Num);
-				}
-			}
-
-			if(t1 == 8 && t2 == 8)
-			{
-				switch(Operator.Type)
-				{
-					case TokenType.EQ_EQ: return Union.Of(left.Bol == right.Bol);
-					case TokenType.BANG_EQ: return Union.Of(left.Bol != right.Bol);
-				}
-			}
-
-			if(t1 == 32 || t2 == 32)//If here's a null
-			{
-				switch(Operator.Type)
-				{
-					case TokenType.EQ_EQ: return Union.Of(left.FirstType == right.FirstType);
-					case TokenType.BANG_EQ: return Union.Of(left.FirstType != right.FirstType);
-				}
-				return Union.Null;
-			}
+			dynamic right = Right.Cast(sb);
+			dynamic left = Left.Cast(sb);
 
 			//Greatly thanks to dynamic type.
 			return Operator.Type switch
 			{
-				TokenType.MINUS => Union.Of(left.Obj - right.Obj),
-				TokenType.PLUS => Union.Of(left.Obj + right.Obj),
-				TokenType.STAR => Union.Of(left.Obj * right.Obj),
-				TokenType.SLASH => Union.Of(left.Obj / right.Obj),
-				TokenType.PERCENT => Union.Of(left.Obj % right.Obj),
-				TokenType.UPROW => Union.Of(left.Obj ^ right.Obj),
-				TokenType.GREAT => Union.Of(left.Obj > right.Obj),
-				TokenType.GREAT_EQ => Union.Of(left.Obj >= right.Obj),
-				TokenType.LESS => Union.Of(left.Obj < right.Obj),
-				TokenType.LESS_EQ => Union.Of(left.Obj <= right.Obj),
-				TokenType.EQ_EQ => Union.Of(left.Obj == right.Obj),
-				TokenType.BANG_EQ => Union.Of(left.Obj != right.Obj),
-				_ => Union.Null,
+				TokenType.MINUS => (left - right),
+				TokenType.PLUS => (left + right),
+				TokenType.STAR => (left * right),
+				TokenType.SLASH => (left / right),
+				TokenType.PERCENT => (left % right),
+				TokenType.UPROW => (left ^ right),
+				TokenType.GREAT => (left > right),
+				TokenType.GREAT_EQ => (left >= right),
+				TokenType.LESS => (left < right),
+				TokenType.LESS_EQ => (left <= right),
+				TokenType.EQ_EQ => (left == right),
+				TokenType.BANG_EQ => (left != right),
+				_ => null,
 			};
 		}
 

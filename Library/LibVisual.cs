@@ -72,6 +72,12 @@ namespace TwiaSharp.Library
 					batch.Draw(v.any(0), v.f(1), v.f(2), v.f(3), v.f(4), v.f(5), v.f(6), v.f(7), v.f(8));
 				return null;
 			});
+			Functions["fill"] = new Function((v) =>
+			{
+				if(v.Length == 4)
+					batch.FillTex(v.f(0), v.f(1), v.f(2), v.f(3));
+				return null;
+			});
 			Functions["draw_text"] = new Function((v) =>
 			{
 				string s = v.s(0);

@@ -20,7 +20,7 @@ function init(obj, date) do
 	--So be aware of it.
 	let fib_result = fib(10);
 	--just like print.
-	write_endpoint(fib_result);
+	print(fib_result);
 
 	--Function is a variable in global scope, and it is the only global variable.
 	--Twia do not provide global variable, except constant.
@@ -28,7 +28,7 @@ function init(obj, date) do
 	fib_fn(10);
 
 	--Closures.
-	let my_print = with(x) do write_endpoint(x); end;
+	let my_print = with(x) do print(x); end;
 	my_print("This is from closure!");
 	let my_sum = with(x, y) do
 		let v = x + y;
@@ -43,50 +43,50 @@ function init(obj, date) do
 	let a = [1, 2, 3, 4];
 	let b = new array[4];
 	let b[0] = 1;
-	write_endpoint(b[0] + a[3]);
+	print(b[0] + a[3]);
 
 	--Object creation. This way we cannot contains any variables.
 	let point = {x = 1, y = 2};
 	--This way we can push a variable into an object.
 	let point.x = a[2];
-	write_endpoint(point.x);
+	print(point.x);
 
 	--Remember the object we initially passed in?
-	write_endpoint(obj.item1);
-	write_endpoint(date);
+	print(obj.item1);
+	print(date);
 
 	--Contains functions. Cool!
 	let point.x = fib;
-	write_endpoint(point.x(27));
+	print(point.x(27));
 
 	--CHAPTER 3 - if, while and for
 
 	if(true or 1 == 2) do
-		write_endpoint("This is if!");
+		print("This is if!");
 	end
 	else do
-		write_endpoint("This is else!");
+		print("This is else!");
 	end
 
 	if(true and 1 == 2) do
-		write_endpoint("This is if!");
+		print("This is if!");
 	end
 	else if(true) do
-		write_endpoint("This is else if!");
+		print("This is else if!");
 	end
 	else do
-		write_endpoint("This is else!");
+		print("This is else!");
 	end
 
 	let i = 0;
 	while(i < 10) do
-		write_endpoint("While " + i);
+		print("While " + i);
 		let i = i + 1;
 	end
 
 	--Look. Here we reset the "i" variable, so it is usable again.
 	for(let i = 0; i < 10; let i = i + 1) do
-		write_endpoint("For " + i);
+		print("For " + i);
 	end
 
 end

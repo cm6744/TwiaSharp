@@ -4,7 +4,7 @@ using TwiaSharp.Runtime;
 namespace TwiaSharp.Library
 {
 
-	public class Function : FunctionLike
+	public unsafe class Function : FunctionLike
 	{
 
 		public delegate object FunctionBody(Driver driver);
@@ -16,9 +16,9 @@ namespace TwiaSharp.Library
 			Body = body;
 		}
 
-		public virtual Union Invoke(Driver driver)
+		public virtual object Invoke(Driver driver)
 		{
-			return Union.FromObject(Body.Invoke(driver));
+			return Body.Invoke(driver);
 		}
 
 	}

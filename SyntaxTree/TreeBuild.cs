@@ -71,14 +71,14 @@ namespace TwiaSharp.SyntaxTree
 			//Put all functions into global vars.
 			foreach(var kv in localLib.Functions)
 			{
-				code.FnTemp[TreeVariables.MakeG(kv.Key)] = Union.Of(kv.Value);
+				code.FnTemp[TreeVariables.MakeG(kv.Key)] = (kv.Value);
 			}
 			foreach(var libn in usings)
 			{
-				Lib lib = Sandbox.LibOverall.Vars[libn];
+				Lib lib = Sandbox.LibOverall.Contents[libn];
 				foreach(var kv in lib.Functions)
 				{
-					code.FnTemp[TreeVariables.MakeG(kv.Key)] = Union.Of(kv.Value);
+					code.FnTemp[TreeVariables.MakeG(kv.Key)] = (kv.Value);
 				}
 			}
 
@@ -105,7 +105,7 @@ namespace TwiaSharp.SyntaxTree
 				Token name = Consume(TokenType.IDENT);
 				Consume(TokenType.EQ);
 				Expression val = exp();
-				localLib.Consts[name.Lexeme] = Union.ToObject(val.Cast());
+				localLib.Consts[name.Lexeme] = val.Cast(null);
 			}
 			else if(Match(TokenType.FUNCTION))
 			{
@@ -464,9 +464,14 @@ namespace TwiaSharp.SyntaxTree
 			{
 				Token ident = Previous;
 				
+				//lib reference: sharply improvement in efficiency.
 				if(Match(TokenType.COLON))
 				{
-					ident = Consume(TokenType.IDENT);//this way has no effect, just a marker.
+					string libn = ident.Lexeme;
+					Lib lib = Sandbox.LibOverall.Contents[libn];
+			
+					ident = Consume(TokenType.IDENT);
+					return new ExpLiteral(lib.Search(ident.Lexeme));
 				}
 
 				int i = vars.Make(ident.Lexeme, false);
@@ -507,19 +512,19 @@ namespace TwiaSharp.SyntaxTree
 				Expression size = exp();
 				Consume(TokenType.R_SEMBR);
 				//Support dynamic size input
-				return new ExpLiteral(() => new Union[(int) size.Cast().Num]);
+				return new ExpLiteral(() => new object[(int) size.Cast(null)]);
 			}
 
 			//let x = [1, 2, 3, ...];
 			if(Match(TokenType.L_SEMBR))
 			{
-				List<Union> joins = new();
+				List<object> joins = new();
 
 				if(!Check(TokenType.R_SEMBR))
 				{
 					do
 					{
-						joins.Add(exp().Cast());
+						joins.Add(exp().Cast(null));
 					}
 					while(Match(TokenType.COMMA));
 				}
@@ -541,7 +546,7 @@ namespace TwiaSharp.SyntaxTree
 						Token tk = Consume(TokenType.IDENT);
 						Consume(TokenType.EQ);
 						//Only support fixed value to initalize
-						joins.Fields[tk.Lexeme] = exp().Cast();
+						joins.Fields[tk.Lexeme] = exp().Cast(null);
 					}
 					while(Match(TokenType.COMMA));
 				}

@@ -22,18 +22,18 @@ namespace TwiaSharp.SyntaxTree
 			ElseBranch = elseBranch;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Union Execute()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Execute(Sandbox sb)
 		{
 			foreach(var e_s in Branches)
 			{
-				if(e_s.Item1.Cast().Bol) return e_s.Item2.Execute();
+				if(e_s.Item1.Cast(sb)) return e_s.Item2.Execute(sb);
 			}
 			if(ElseBranch != null)
 			{
-				return ElseBranch.Execute();
+				return ElseBranch.Execute(sb);
 			}
-			return Union.Null;
+			return null;
 		}
 
 	}

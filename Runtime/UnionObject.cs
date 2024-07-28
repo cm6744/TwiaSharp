@@ -11,23 +11,23 @@ namespace TwiaSharp.Runtime
 	public class UnionObject
 	{
 
-		public readonly Dictionary<string, Union> Fields = new();
+		public readonly Dictionary<string, object> Fields = new();
 
 		public UnionObject Property(string s, object o)
 		{
-			Fields[s] = Union.FromObject(o);
+			Fields[s] = o;
 			return this;
 		}
 
 		public UnionObject Method(string s, Function fn)
 		{
-			Fields[s] = Union.FromObject(fn);
+			Fields[s] = fn;
 			return this;
 		}
 
-		public Union Pack()
+		public object Pack()
 		{
-			return Union.Of(Fields);
+			return Fields;
 		}
 
 	}

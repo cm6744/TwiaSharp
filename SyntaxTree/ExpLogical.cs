@@ -24,21 +24,21 @@ namespace TwiaSharp.SyntaxTree
 			Operator = op;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Union Cast()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Cast(Sandbox sb)
 		{
-			Union left = Left.Cast();
+			dynamic left = Left.Cast(sb);
 
 			if(Operator.Type == TokenType.OR)
 			{
-				if(left.Bol) return left;
+				if(left) return left;
 			}
 			else
 			{
-				if(!left.Bol) return left;
+				if(!left) return left;
 			}
 
-			return Right.Cast();
+			return Right.Cast(sb);
 		}
 
 	}

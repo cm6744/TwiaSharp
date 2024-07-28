@@ -22,17 +22,17 @@ namespace TwiaSharp.SyntaxTree
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-		public Union Execute()
+		public dynamic Execute(Sandbox sb)
 		{
-			while(Condition.Cast().Bol)
+			while(Condition.Cast(sb))
 			{
-				Union u = Body.Execute();
-				if(u.Return)
+				dynamic u = Body.Execute(sb);
+				if(sb.Return)
 				{
 					return u;
 				}
 			}
-			return Union.Null;
+			return null;
 		}
 
 	}

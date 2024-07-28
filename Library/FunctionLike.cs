@@ -5,7 +5,7 @@ namespace TwiaSharp.Library
 	public interface FunctionLike
 	{
 		
-		public Union Invoke(Driver driver);
+		public object Invoke(Driver driver);
 
 	}
 

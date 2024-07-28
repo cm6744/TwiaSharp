@@ -22,15 +22,15 @@ namespace TwiaSharp.SyntaxTree
 			Access = ac;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Union Cast()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Cast(Sandbox sb)
 		{
-			dynamic arr = Sandbox.Stack[Sandbox.Depth, Access].Obj;
+			dynamic arr = sb[sb.Depth, Access];
 
-			if(arr is Union[])
-				return arr[(int) Key.Cast().Num];
+			if(arr is object[])
+				return arr[(int) Key.Cast(sb)];
 			else
-				return arr[Union.ToObject(Key.Cast())];
+				return arr[Key.Cast(sb)];
 		}
 
 	}

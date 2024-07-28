@@ -20,10 +20,10 @@ namespace TwiaSharp.Library
 			Stmts = new();
 		}
 
-		public virtual Union Invoke(Driver driver)
+		public virtual object Invoke(Driver driver)
 		{
-			Sandbox.Push(driver.Args);
-			return Sandbox._D_InnerExecute(Stmts);
+			driver._Sandbox.Push(driver.Args);
+			return driver._Sandbox._D_InnerExecute(Stmts);
 		}
 
 	}

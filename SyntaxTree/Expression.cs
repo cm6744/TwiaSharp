@@ -11,7 +11,7 @@ namespace TwiaSharp.SyntaxTree
 	public interface Expression
 	{
 
-		public Union Cast();
+		public dynamic Cast(Sandbox sb);
 
 	}
 

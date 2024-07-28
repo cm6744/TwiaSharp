@@ -10,16 +10,16 @@ namespace TwiaSharp.Library
 	public class LibOverall : Lib
 	{
 
-		public Dictionary<string, Lib> Vars = new();
+		public Dictionary<string, Lib> Contents = new();
 
 		public void Hook(string lib, string name, Function fn)
 		{
-			Vars[lib].Functions[name] = fn;
+			Contents[lib].Functions[name] = fn;
 		}
 
 		public void Hook(string lib, string name, object cst)
 		{
-			Vars[lib].Consts[name] = cst;
+			Contents[lib].Consts[name] = cst;
 		}
 
 		public void Link(Lib lib)
@@ -27,16 +27,16 @@ namespace TwiaSharp.Library
 			lib.Load();
 
 			if(lib.LibName == null) return;
-			if(Vars.ContainsKey(lib.LibName)) return;
+			if(Contents.ContainsKey(lib.LibName)) return;
 
-			Vars[lib.LibName] = lib;
+			Contents[lib.LibName] = lib;
 		}
 
 		public FunctionLike SearchAvailables(List<string> lst, string name)
 		{
 			foreach(string s in lst)
 			{
-				Lib lib = Vars[s];
+				Lib lib = Contents[s];
 				if(lib == null) Errors.RuntimeError(-1, $"Unknown library detected: {s}");
 				FunctionLike func = lib.Search(name);
 				if(func != null) return func;
@@ -48,7 +48,7 @@ namespace TwiaSharp.Library
 		{
 			foreach(string s in lst)
 			{
-				Lib lib = Vars[s];
+				Lib lib = Contents[s];
 				if(lib == null) Errors.RuntimeError(-1, $"Unknown library detected: {s}");
 				object o = lib.TryConst(name);
 				if(o != null) return o;

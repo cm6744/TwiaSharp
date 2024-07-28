@@ -28,19 +28,19 @@ namespace TwiaSharp.Runtime
 			return TreeBuild.ToTree(lst);
 		}
 
-		public Union[] FnTemp = new Union[256];
+		public FunctionLike[] FnTemp = new FunctionLike[256];
 		public FunctionLike InitFunc;
 		public Lib Library;
 
-		public Union Eval()
+		public dynamic Eval(Sandbox sb)
 		{
-			Sandbox.Functions = FnTemp;
-			Union u = InitFunc.Invoke(Driver.DR0);
-			Sandbox.Terminate();
+			sb.Functions = FnTemp;
+			dynamic u = InitFunc.Invoke(new Driver().With(sb));
+			sb.Terminate();
 			return u;
 		}
 
-		public Union Eval(params object[] objs)
+		public dynamic Eval(Sandbox sb, params object[] objs)
 		{
 			Expression[] exps = new Expression[objs.Length];
 
@@ -49,21 +49,21 @@ namespace TwiaSharp.Runtime
 				exps[i] = new ExpLiteral(objs[i]);
 			}
 
-			Sandbox.Functions = FnTemp;
-			Union u = InitFunc.Invoke(new Driver(exps));
-			Sandbox.Terminate();
+			sb.Functions = FnTemp;
+			dynamic u = InitFunc.Invoke(new Driver(exps).With(sb));
+			sb.Terminate();
 			return u;
 		}
 
-		public Union EvalTo(string fn)
+		public dynamic EvalTo(Sandbox sb, string fn)
 		{
-			Sandbox.Functions = FnTemp;
-			Union u = Library.Search(fn).Invoke(Driver.DR0);
-			Sandbox.Terminate();
+			sb.Functions = FnTemp;
+			dynamic u = Library.Search(fn).Invoke(new Driver().With(sb));
+			sb.Terminate();
 			return u;
 		}
 
-		public Union EvalTo(string fn, params object[] objs)
+		public dynamic EvalTo(Sandbox sb, string fn, params object[] objs)
 		{
 			Expression[] exps = new Expression[objs.Length];
 
@@ -72,9 +72,9 @@ namespace TwiaSharp.Runtime
 				exps[i] = new ExpLiteral(objs[i]);
 			}
 
-			Sandbox.Functions = FnTemp;
-			Union u = Library.Search(fn).Invoke(new Driver(exps));
-			Sandbox.Terminate();
+			sb.Functions = FnTemp;
+			dynamic u = Library.Search(fn).Invoke(new Driver(exps).With(sb));
+			sb.Terminate();
 			return u;
 		}
 

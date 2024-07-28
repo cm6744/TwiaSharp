@@ -20,19 +20,20 @@ namespace TwiaSharp
 			FileSystem.AsTestSource();
 
 			Sandbox.LoadEnvironment();
+			Sandbox sb = new();
 
 			//Compile the dynamic lib.
 			CompiledChunk.From(FileSystem.GetLocal("LIB_1.twi"));
 			//Run the script.
 			var exp = CompiledChunk.From(FileSystem.GetLocal("EXAMPLE.twi"));
 			UnionObject obj = new UnionObject().Property("item1", "Hello world!");
-			exp.Eval(obj, DateTime.Now);
+			exp.Eval(sb, obj, DateTime.Now);
 			//We can pass something into the script or invoke other functions.
 			//CompiledChunk provides a serie of methods to fulfill you.
 
 			//This script print the time used to for loop 1,000,000 times. Not slow.
 			exp = CompiledChunk.From(FileSystem.GetLocal("TimeShow.twi"));
-			exp.Eval();
+			exp.Eval(sb);
 		}
 
 	}

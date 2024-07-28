@@ -22,35 +22,18 @@ namespace TwiaSharp.SyntaxTree
 			Operator = op;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Union Cast()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Cast(Sandbox sb)
 		{
-			Union right = Right.Cast();
+			dynamic right = Right.Cast(sb);
 
-			if(right.FirstType == 0)
+			switch(Operator.Type)
 			{
-				switch(Operator.Type)
-				{
-					case TokenType.MINUS: return Union.Of(-right.Num);
-				}
-			}
-			if(right.FirstType == 8)
-			{
-				switch(Operator.Type)
-				{
-					case TokenType.BANG: return Union.Of(!right.Bol);
-				}
-			}
-			if(right.FirstType == 16)
-			{
-				switch(Operator.Type)
-				{
-					case TokenType.MINUS: return Union.Of(-right.Obj);
-					case TokenType.BANG: return Union.Of(!right.Obj);
-				}
+				case TokenType.MINUS: return (-right);
+				case TokenType.BANG: return (!right);
 			}
 
-			return Union.Null;
+			return null;
 		}
 
 	}

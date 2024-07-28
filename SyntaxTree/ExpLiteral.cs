@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TwiaSharp.Runtime;
@@ -13,22 +14,26 @@ namespace TwiaSharp.SyntaxTree
     public sealed class ExpLiteral : Expression
     {
 
-        public Union Value;
+        public object Value;
+        private bool Sup;
 
         public ExpLiteral(object value)
         {
-            Value = Union.FromObject(value);
+            Value = value;
         }
 
         public ExpLiteral(Supplier<object> value)
         {
-            Value = Union.FromObject(value);
+            Value = value;
+            Sup = true;
         }
 
-        public Union Cast()
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public dynamic Cast(Sandbox sb)
         {
+            if(Sup) return ((Supplier<object>) Value).Invoke();
             //Do not let the supplier go into stack!!!
-            return Union.Certained(Value);
+            return Value;
         }
 
     }

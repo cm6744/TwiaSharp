@@ -33,9 +33,9 @@ namespace TwiaSharp.Library
 			Functions["len"] = new Function((v) =>
 			{
 				object o = v.any(0);
-				if(o is Union[] _a1) return _a1.Length;
+				if(o is object[] _a1) return _a1.Length;
 				if(o is UnionObject _a2) return _a2.Fields.Count;
-				if(o is IEnumerable<Union> _a3) return _a3.Count();
+				if(o is IEnumerable<object> _a3) return _a3.Count();
 				return 0;
 			});
 

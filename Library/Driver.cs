@@ -1,57 +1,69 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TwiaSharp.Runtime;
 using TwiaSharp.SyntaxTree;
 
 namespace TwiaSharp.Library
 {
+
 	public class Driver
 	{
 
-		public static Driver DR0 = new Driver(new Expression[0]);
-
 		public Expression[] Args;
+		public Sandbox _Sandbox;
 
 		public Driver(Expression[] args)
 		{
 			Args = args;
 		}
 
+		public Driver()
+		{
+			Args = Array.Empty<Expression>();
+		}
+
+		public Driver With(Sandbox sb)
+		{
+			_Sandbox = sb;
+			return this;
+		}
+
 		public int Length => Args.Length;
 
 		public int i(int index)
 		{
-			Union u = Args[index].Cast();
-			return (int) u.Num;
+			dynamic u = Args[index].Cast(_Sandbox);
+			return (int) u;
 		}
 
 		public float f(int index)
 		{
-			Union u = Args[index].Cast();
-			return (float) u.Num;
+			dynamic u = Args[index].Cast(_Sandbox);
+			return (float) u;
 		}
 
 		public double d(int index)
 		{
-			Union u = Args[index].Cast();
-			return u.Num;
+			dynamic u = Args[index].Cast(_Sandbox);
+			return u;
 		}
 
 		public string s(int index)
 		{
-			Union u = Args[index].Cast();
-			return Union.EnsureS(Union.ToObject(u));
+			dynamic u = Args[index].Cast(_Sandbox);
+			return Union.EnsureS(u);
 		}
 
 		public T t<T>(int index)
 		{
-			Union u = Args[index].Cast();
-			return (T) Union.ToObject(u);
+			dynamic u = Args[index].Cast(_Sandbox);
+			return (T) u;
 		}
 
 		public dynamic any(int index)
 		{
-			Union u = Args[index].Cast();
-			return (dynamic) Union.ToObject(u);
+			dynamic u = Args[index].Cast(_Sandbox);
+			return u;
 		}
 
 	}

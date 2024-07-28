@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TwiaSharp.Runtime;
@@ -19,9 +20,10 @@ namespace TwiaSharp.SyntaxTree
 			Statements = statements;
 		}
 
-		public Union Execute()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Execute(Sandbox sb)
 		{
-			return Sandbox.__InnerExecute(Statements);
+			return sb.__InnerExecute(Statements);
 		}
 
 		public void AppendE(Statement s) 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TwiaSharp.Library;
@@ -22,14 +23,15 @@ namespace TwiaSharp.SyntaxTree
             Arguments = new Driver(args);
         }
 
-        public Union Cast()
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public dynamic Cast(Sandbox sb)
         {
-            FunctionLike fn = Callee.Cast().Obj;
+            FunctionLike fn = Callee.Cast(sb);
             if(fn == null)
             {
                 Errors.RuntimeError(-1, $"Unknown function.");
 			}
-            return fn.Invoke(Arguments);
+            return fn.Invoke(Arguments.With(sb));
         }
 
     }

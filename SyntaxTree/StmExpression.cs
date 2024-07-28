@@ -21,9 +21,10 @@ namespace TwiaSharp.SyntaxTree
 			Value = value;
 		}
 
-		public Union Execute()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Execute(Sandbox sb)
 		{
-			return Value.Cast();
+			return Value.Cast(sb);
 		}
 
 	}

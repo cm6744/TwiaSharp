@@ -6,12 +6,14 @@ import io;
 import fib;
 
 function init() do
-	
+	for(let j = 0; j < 800; let j = j + 1) do
+		speedtest(with() do for(let i = 0; i < 1000000; let i = i + 1) do end end);
+	end
 end
 
 function speedtest(fn) do
 	let t0 = timestamp();
 	fn();
 	let t1 = timestamp();
-	write_endpoint(timestamp_to_milli(t1 - t0));
+	print(timestamp_to_milli(t1 - t0));
 end

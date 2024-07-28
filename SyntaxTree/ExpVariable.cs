@@ -20,10 +20,10 @@ namespace TwiaSharp.SyntaxTree
 			Access = ac;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Union Cast()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public dynamic Cast(Sandbox sb)
 		{
-			return Sandbox.Stack[Sandbox.Depth, Access];
+			return sb[sb.Depth, Access];
 		}
 
 	}

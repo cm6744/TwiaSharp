@@ -11,7 +11,7 @@ namespace TwiaSharp.SyntaxTree
 	public interface Statement
 	{
 
-		public Union Execute();
+		public dynamic Execute(Sandbox sb);
 
 		public void AppendE(Statement s) { }
 		

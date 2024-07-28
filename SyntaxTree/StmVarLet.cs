@@ -22,10 +22,10 @@ namespace TwiaSharp.SyntaxTree
             Val = val;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Union Execute()
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public dynamic Execute(Sandbox sb)
         {
-            return Sandbox.Stack[Sandbox.Depth, Access] = Val == null ? Union.Null : Val.Cast();
+            return sb[sb.Depth, Access] = Val == null ? null : Val.Cast(sb);
         }
 
     }

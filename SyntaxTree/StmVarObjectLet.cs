@@ -24,11 +24,11 @@ namespace TwiaSharp.SyntaxTree
             Val = val;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Union Execute()
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public dynamic Execute(Sandbox sb)
         {
-            UnionObject arr = Sandbox.Stack[Sandbox.Depth, Access].Obj;
-            return arr.Fields[Key.Lexeme] = Val.Cast();
+            UnionObject arr = sb[sb.Depth, Access];
+            return arr.Fields[Key.Lexeme] = Val.Cast(sb);
         }
 
     }
